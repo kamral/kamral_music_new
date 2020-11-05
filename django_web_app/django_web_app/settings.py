@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from pathlib import Path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,7 +41,46 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    #3d-party apps
+    'rest_framework',
+    # Нам также нужно добавить приложение authtoken,
+    # которое генерирует токены на сервере.
+    'rest_framework.authtoken',
+    'rest_auth',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'rest_auth.registration',
+
 ]
+
+#new
+#
+
+EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
+SITE_ID=1
+
+REST_FRAMEWORK={
+    'DEFAULT_PERMISSION_CLASSES':[
+        # делаем разрешение для просмотра,обновления,удаления записей
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+# Зачем использовать оба метода?
+# Ответ заключается в том, что они служат разным целям.
+# Сеансы используются для питания просматриваемого API
+# и возможности входа и выхода из него.
+# Мы сохраняем SessionAuthentication,
+# так как он все еще нужен для нашего просматриваемого API,но теперь
+# используем токены для передачи учетных данных
+# аутентификации туда и обратно в наших HTTP-заголовках.
+    'DEFAULT_AUTHENTICATION_CLASSES':[
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

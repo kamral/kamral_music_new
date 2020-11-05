@@ -14,7 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.contrib.auth import views as auth_views
+
+# LoginView-Отображает форму авторизации и обрабатывает действия с ней.
+# LogoutView-Выводит пользователя из системы
+# и отображает сообщение "Вы вышли из системы".
+from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
@@ -22,13 +26,32 @@ from users import views as user_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
+    # регистрация пользователя
+    path('login/', LoginView.as_view
+    (template_name='users/login.html'), name='login'),
+    # авторизация на сайт
     path('register/', user_views.register, name='register'),
+    #профиль пользователя
     path('profile/', user_views.profile, name='profile'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
+
+    # Выводит пользователя из системы и
+    # отображает сообщение "Вы вышли из системы"
+    path('logout/', LogoutView.as_view
+    (template_name='users/logout.html'), name='logout'),
+
     path('', include('blog.urls')),
+    path('', include('blog.urls')),
+    path('/api-auth/',include('rest_framework.urls')),
+    # Login and Logout
+    path('api/v1/rest-auth/',include('rest_auth.urls')),
+    # registrations
+    path('api/v1/rest-auth/registration/',
+         include('rest_auth.registration.urls')),
+
+
 ]
 
-
+#мы вызываем settings.DEBUG , для работы с медиа файлами
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

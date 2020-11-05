@@ -2,20 +2,44 @@
 {% block content %}
 <div class="jumbotron mt-3 shadow-lg">
 <article class="media content-section shadow ">
-   <a href="{{ object.author.profile.image.url }} " target="_blank"> <img src="{{ object.author.profile.image.url }}  " alt="" class="article-img rounded-circle img-thumbnail img-fluid">
+<!--   ссылка на аватарку, которая берется из модели профиль.-->
+<!--    но входит в нее осуществляется через внешникй ключ author-->
+<!--    она переносит с localhost:8000/post/<int:pk> на-->
+<!--  http://localhost:8006/media/default.jpg-->
+
+  <a href="{{ object.author.profile.image.url }} "
+      target="_blank">
+<!--    берем картинку с базы данных модели Profile,-->
+<!--    через внешний ключ author модели Post-->
+    <img src="{{ object.author.profile.image.url }}" alt=""
+         class="article-img rounded-circle img-thumbnail img-fluid">
    </a>
     <div class="media-body">
       <div class="">
         <div class="d-flex justify-content-between">
-        <a class="mr-2 mt-0 mb-0  text-dark" href="{% url 'user-posts' object.author.username  %}"><h3>{{ object.author }}</h3></a>
-        <small class="text-muted  text-align-right">{{ object.date_upload }}</small>
+<!--          данная ссылка на имя пользователя который написал пост-->
+<!--          перенесет нас с post-detail на users-post,
+              то есть с localhost:8000/post/<int:pk> в
+              localhost:8000/user<str:username>/-->
+          <a class="mr-2 mt-0 mb-0  text-dark"
+           href="{% url 'user-posts' object.author.username  %}">
+<!--            Берем имя с базы данных Post-->
+            <h3>{{ object.author }}</h3></a>
+        <small class="text-muted  text-align-right">
+<!--          берем время написания поста с базы данных Post -->
+          {{ object.date_upload }}</small>
         </div>
+<!--        если пользователь не является автором поста,-->
+<!--        то он может просто загрузить 'dowload'-->
         {% if object.author != user %}
           <div class="form-group mt-0 pt-0 d-flex justify-content-end">          
-            <a href="{{ object.file.url }}" download class="btn btn-primary flex-last" type="submit"><i class="fas fa-download"></i> Downlaod</a>
+            <a href="{{ object.file.url }}" download class="btn btn-primary flex-last"
+               type="submit"><i class="fas fa-download"></i> Downlaod</a>
           </div>
         {% endif %}
         <hr>
+<!--        если пользователь является автором поста,-->
+<!--        то он может 'update' и 'delete'-->
         {% if object.author == user %}
           <div>
             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Update</a>
@@ -40,8 +64,11 @@
           {% endif %}
         {% endif %}
       </div>
+<!--      название поста-->
       <h2>{{ object.title }}</h2>
+<!--      содержимое поста-->
       <p class="article-content">{{ object.content }}</p>
     </div>
   </article>
+</div>
 {% endblock content %}

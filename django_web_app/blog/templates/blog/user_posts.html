@@ -1,19 +1,33 @@
 {% extends "blog/base.html" %}
 {% block content %}
     <h1 class="mb-3">Posts by {{ view.kwargs.username }} ({{ page_obj.paginator.count }})</h1>
-    {% for post in posts %}
+<!--    Перечисляет все посты конкретного пользователя    -->
+{% for post in posts %}
         <article class="media content-section">
-          <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+<!--            Загружаем аватарку по ссылке из базы данных-->
+          <img class="rounded-circle article-img"
+               src="{{ post.author.profile.image.url }}">
           <div class="media-body">
             <div class="article-metadata">
-              <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+<!--                делаем имя автора из сформированного поста ссылкйо-->
+              <a class="mr-2" href="{% url 'user-posts' post.author.username %}">
+<!--                  берем это имя из базы данных Post-->
+                  {{ post.author }}</a>
+<!--                выводим время написания поста из базы данных Post-->
               <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
             </div>
-            <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
+<!--              создаем сслыку на название поста. и он нас перенаправляеи на-->
+<!--              localhost:8000/post/<int:pk>-->
+            <h2><a class="article-title" href="{% url 'post-detail' post.id %}">
+<!--                название поста берем из базы данных Post-->
+                {{ post.title }}</a></h2>
+<!--              выводи содержимое избазы данных Post-->
             <p class="article-content">{{ post.content }}</p>
           </div>
         </article>
     {% endfor %}
+
+<!--        Пагинация-->
     {% if is_paginated %}
 
       {% if page_obj.has_previous %}

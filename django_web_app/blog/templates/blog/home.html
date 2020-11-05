@@ -1,27 +1,66 @@
 {% extends "blog/base.html" %}
 {% block content %}
     {% for post in posts %}
+<!--      Jumbotron-указывает на большую серую коробку для вызова-->
+<!--      дополнительного внимания к какому-то-->
+<!--      Специальному содержанию или информации.
+          У нас он будет белого цвета.-->
+
       <div class="jumbotron mt-3 bg-white shadow-lg">
+<!--          создает секцию куда можно вместить медиа файл-->
       <article class="media content-section shadow">
-        <a href="{{ post.author.profile.image.url }} " target="_blank"> <img src="{{ post.author.profile.image.url }}  " alt="" class="article-img rounded-circle img-thumbnail img-fluid shadow">
+<!--        создаем ссылку для фотографии из профиля-->
+<!--          Мы берем созданную нами модель Post, -->
+<!--          из неее выбираем автора. Так как у нас-->
+<!--          Метод Profile привязан к автору по связи-->
+<!--          Один к одному. Получается, что мы можем через автора-->
+<!--          войти в его профиль и выбрать картинку-->
+<!--          Нажав на картинку пользователя- нас перенаправят-->
+<!--          по ссылку localhost:8000/media/nazvaniye_kartinki.jpg-->
+        <a href="{{ post.author.profile.image.url }} " target="_blank">
+          <img src="{{ post.author.profile.image.url }}  "
+               alt="" class="article-img rounded-circle img-thumbnail
+               img-fluid shadow">
         </a>
         <div class="media-body">
           <div class="article-metadata d-flex justify-content-between">
-            <a class="mr-2 " href="{% url 'user-posts' post.author.username  %}"><h3>{{ post.author }}</h3></a>
-              <small class="text-muted">{{ post.date_upload|date:"F d, Y" }}</small>
+<!--              имя пользователя на главной странице , становится-->
+<!--              ссылкой, которая при нажатии перенаправляет нас на все-->
+<!--              посты созданные им- localhost:8000/user/kamral010101-->
+            <a class="mr-2 " href="{% url 'user-posts' post.author.username  %}">
+<!--                это имя мы получаем из базы данных благодаря-->
+<!--                запросу  - {{post.author}}-->
+                <h3>{{ post.author }}</h3></a>
+              <small class="text-muted">{{ post.date_upload|date:"F d, Y" }}
+              </small>
           </div>
+<!--            Если есть загрузочный файл-->
           {% if post.file %}
-          <a href="{{ post.file.url }}"  download class="text-dark text-justify "><h5>{{ post.blog }}</h5></a>
+<!--      мы перейдем на него -localhost:8000/media/Files/file_names.mp3-->
+<!--      вытаскивая его из базы данных.-->
+          <a href="{{ post.file.url }}"
+             download class="text-dark text-justify "><h5>
+            {{ post.blog }}</h5></a>
           {% endif %}
-     
+
       
-     
-          <h2><a class="article-title text-justify " href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
+<!--        Сделав названием темы ссылкой на переход в этот пост.-->
+<!--            то есть с localhost:8000 на-->
+<!--            localhost:8000/post/<int:pk>/-->
+          <h2><a class="article-title text-justify "
+                 href="{% url 'post-detail' post.id %}">
+            {{ post.title }}</a></h2>
+<!--            создаем класс для расположения содержимого -->
+<!--            между фалом загрузки и аватаркой.-->
+<!--            {{post.content}}-позволяет вывести из базы данных содержимое-->
           <div class="d-flex justify-content-between">
-            <p class="article-content text-justify text-truncate overflow-hidden">{{ post.content }}</p>
+            <p class="article-content text-justify text-truncate overflow-hidden">
+              {{ post.content }}</p>
+<!--              если есть загрузочный файл-->
             {% if post.file %}
-          <div class="form-group mt-0 pt-0  m-2">          
-            <a class="btn btn-outline-primary  btn-d "  href="{{ post.file.url }}"  download type="submit"><i class="fas fa-download"></i></a>
+          <div class="form-group mt-0 pt-0  m-2">
+            <a class="btn btn-outline-primary  btn-d "  href="{{ post.file.url }}"
+               download type="submit"><i class="fas fa-download"></i></a>
           </div>
           {% endif %}
         
@@ -35,7 +74,8 @@
 
       {% if page_obj.has_previous %}
         <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">
+          Previous</a>
       {% endif %}
 
       {% for num in page_obj.paginator.page_range %}
